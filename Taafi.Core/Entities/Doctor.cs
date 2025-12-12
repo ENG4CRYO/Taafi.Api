@@ -11,7 +11,7 @@
     public string ImageUrl { get; set; } = default!;
     public bool IsActive { get; set; } = default!;
 
-    public ICollection<DoctorShedule> DoctorShedules { get; set; } = default!;
-    public Appointment Appointment { get; set; } = default!;
+    public ICollection<DoctorSchedule> DoctorSchedules { get; set; } = default!;
+    public ICollection<Appointment> Appointments { get; set; } = default!;
 }
 

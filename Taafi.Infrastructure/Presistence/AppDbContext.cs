@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Blog.Infrastructure.Presistence
 {
-    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext(options)
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -15,5 +15,10 @@ namespace Blog.Infrastructure.Presistence
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
 
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Specialty> Specialties { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<DoctorSchedule> DoctorSchedules { get; set; } 
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

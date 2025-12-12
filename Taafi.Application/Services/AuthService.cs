@@ -24,7 +24,9 @@ public class AuthService : IAuthService
     public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
     {
         var authModel = new AuthModel();
-        var user = await _userManager.FindByEmailAsync(model.Email);
+        var user = await _userManager.Users
+             .Include(u => u.RefreshTokens) 
+             .FirstOrDefaultAsync(u => u.Email == model.Email);
 
         if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password))
         {

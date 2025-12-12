@@ -36,18 +36,18 @@ public class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
         builder.HasOne(d => d.Specialty)
             .WithMany(s => s.Doctors)
             .HasForeignKey(d => d.SpecialtyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
 
-        builder.HasMany(d => d.DoctorShedules)
+        builder.HasMany(d => d.DoctorSchedules)
             .WithOne(ds => ds.Doctor)
             .HasForeignKey(ds => ds.DoctorId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(d => d.Appointment)
-            .WithMany(a => a.Doctors)
-            .HasForeignKey(d => d.Id)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(d => d.Appointments)
+            .WithOne(a => a.Doctor)
+            .HasForeignKey(a => a.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 

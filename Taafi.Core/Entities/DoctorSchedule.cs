@@ -1,4 +1,4 @@
-﻿public class DoctorShedule
+﻿public class DoctorSchedule
 {
     public string Id { get; set; } = default!;
     public Doctor Doctor { get; set; } = default!;

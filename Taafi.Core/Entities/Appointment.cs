@@ -6,7 +6,7 @@
     public ApplicationUser Patient { get; set; } = default!;
     public string PatientId { get; set; } = default!;
 
-    public ICollection<Doctor> Doctors { get; set; } = default!;
+    public Doctor Doctor { get; set; } = default!;
     public string DoctorId { get; set; } = default!;
 
     public DateTime AppointmentDate { get; set; } = default!;
