@@ -1,4 +1,4 @@
-﻿public class Appoinnment
+﻿public class Appointment
 {
     public string Id { get; set; } = default!;
 

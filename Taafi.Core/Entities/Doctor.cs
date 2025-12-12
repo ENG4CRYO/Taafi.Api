@@ -12,6 +12,6 @@
     public bool IsActive { get; set; } = default!;
 
     public ICollection<DoctorShedule> DoctorShedules { get; set; } = default!;
-    public Appoinnment Appoinnment { get; set; } = default!;
+    public Appointment Appointment { get; set; } = default!;
 }
 
