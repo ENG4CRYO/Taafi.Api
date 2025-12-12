@@ -12,6 +12,8 @@ using System.Text;
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+            modelBuilder.Seed();
         }
 
         public DbSet<Doctor> Doctors { get; set; }
