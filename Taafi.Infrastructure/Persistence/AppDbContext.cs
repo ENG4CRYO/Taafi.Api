@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blog.Infrastructure.Presistence
-{
+
     public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
 
@@ -21,4 +20,4 @@ namespace Blog.Infrastructure.Presistence
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; } 
         public DbSet<Notification> Notifications { get; set; }
     }
-}
+

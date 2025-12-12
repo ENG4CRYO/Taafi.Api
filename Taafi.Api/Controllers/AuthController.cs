@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("blog/[controller]")]
+[Route("taafi/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

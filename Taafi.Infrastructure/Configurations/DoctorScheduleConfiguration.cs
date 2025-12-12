@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class DoctorSheduleConfiguration : IEntityTypeConfiguration<DoctorSchedule>
+public class DoctorScheduleConfiguration : IEntityTypeConfiguration<DoctorSchedule>
 {
     public void Configure(EntityTypeBuilder<DoctorSchedule> builder)
     {

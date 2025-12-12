@@ -13,10 +13,5 @@ public class SpecialtyConfiguration : IEntityTypeConfiguration<Specialty>
         builder.Property(s => s.IconUrl)
             .IsRequired()
             .HasMaxLength(200);
-
-        builder.HasMany(s => s.Doctors)
-            .WithOne(d => d.Specialty)
-            .HasForeignKey(d => d.SpecialtyId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -8,7 +8,7 @@ public class ApplicationUser : IdentityUser
     public string AvatarUrl { get; set; } = default!;
     public List<RefreshToken>? RefreshTokens { get; set; }
 
-    public ICollection<Appointment> Appointment { get; set; } = default!;
-    public ICollection<Notification> Notifications { get; set; } = default!;
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }
 
