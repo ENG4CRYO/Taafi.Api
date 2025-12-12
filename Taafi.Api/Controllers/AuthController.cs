@@ -1,0 +1,66 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+[ApiController]
+[Route("blog/[controller]")]
+public class AuthController : ControllerBase
+{
+    private readonly IAuthService _authService;
+
+    public AuthController(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
+    [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Register([FromBody] RegisterModel model)
+    {
+        var result = await _authService.RegisterAsync(model);
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest("Invalid payload");
+        }
+
+        if (!result.IsAuthenticated)
+        {
+            return BadRequest(result.Message);
+        }
+        return Ok(result);
+    }
+
+    [HttpPost("login")]
+
+    public async Task<IActionResult> Login([FromBody] TokenRequestModel model)
+    {
+        var result = await _authService.GetTokenAsync(model);
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest("Invalid payload");
+        }
+
+        if (!result.IsAuthenticated)
+        {
+            return BadRequest(result.Message);
+        }
+
+
+        return Ok(result);
+    }
+
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto model)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await _authService.RefreshTokenAsync(model.Token, model.RefreshToken);
+
+        if (!result.IsAuthenticated)
+            return BadRequest(result.Message);
+
+        return Ok(result);
+    }
+}

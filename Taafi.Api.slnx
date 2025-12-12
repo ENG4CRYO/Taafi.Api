@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Taafi.Api/Taafi.Api.csproj" />
+  <Project Path="Taafi.Application/Taafi.Application.csproj" />
+  <Project Path="Taafi.Core/Taafi.Core.csproj" />
+  <Project Path="Taafi.Infrastructure/Taafi.Infrastructure.csproj" />
+</Solution>
