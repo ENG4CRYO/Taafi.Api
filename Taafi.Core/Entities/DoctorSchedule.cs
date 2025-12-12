@@ -1,7 +1,7 @@
 ﻿public class DoctorSchedule
 {
     public string Id { get; set; } = default!;
-    public Doctor Doctor { get; set; } = new Doctor();
+    public Doctor Doctor { get; set; } = default!;
     public string DoctorId { get; set; } = default!;
     public DayOfWeek DayOfWeek { get; set; } = default!;
     public TimeOnly StartTime { get; set; } = default!;

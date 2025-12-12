@@ -3,7 +3,7 @@
     public string Id { get; set; } = default!;
     public string Name { get; set; } = default!;
     public string Bio { get; set; } = default!;
-    public Specialty Specialty { get; set; } = new Specialty();
+    public Specialty Specialty { get; set; } = default!;
     public string SpecialtyId { get; set; } = default!;
     public string Location { get; set; } = default!;
     public Decimal Rate { get; set; } = default!;   
