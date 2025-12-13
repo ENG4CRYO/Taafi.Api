@@ -118,6 +118,7 @@ public class AuthService : IAuthService
 
     public async Task<AuthModel> RegisterAsync(RegisterModel model)
     {
+        
         if (await _userManager.FindByEmailAsync(model.Email) is not null)
         {
             return new AuthModel { Message = "Email is already registered!" };
@@ -126,7 +127,8 @@ public class AuthService : IAuthService
         {
             return new AuthModel { Message = "Username is already registered!" };
         }
-
+        if (model.PhoneNumber.Length <= 10) return new AuthModel { Message = "Phone number must be 11 Digit"};
+       
         var user = _mapper.Map<ApplicationUser>(model);
         user.ConcurrencyStamp = Guid.NewGuid().ToString();
 
