@@ -186,7 +186,7 @@ public class AuthService : IAuthService
             issuer: _jwt.Issuer,
             audience: _jwt.Audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(_jwt.Duration),
+            expires: DateTime.UtcNow.AddDays(_jwt.AccessTokenValidityInDays),
             signingCredentials: signingCredentials);
 
         return jwtSecurityToken;
@@ -201,7 +201,7 @@ public class AuthService : IAuthService
         return new RefreshToken
         {
             Token = Convert.ToBase64String(randomNumber),
-            ExpiresOn = DateTime.UtcNow.AddDays(10),
+            ExpiresOn = DateTime.UtcNow.AddDays(_jwt.RefreshTokenValidityInDays),
             CreatedOn = DateTime.UtcNow
         };
     }
