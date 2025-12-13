@@ -3,9 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Taafi.Application.Interfaces;
 
 
-    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) :
+    IdentityDbContext<ApplicationUser>(options),
+    IAppDbContext
     {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

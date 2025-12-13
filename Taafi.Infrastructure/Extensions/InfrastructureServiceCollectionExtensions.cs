@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Taafi.Application.Interfaces;
 
 public static class InfrastructureServiceCollectionExtensions
 {
@@ -18,6 +19,7 @@ public static class InfrastructureServiceCollectionExtensions
 
 
         service.Configure<JWT>(configuration.GetSection("JWT"));
+        service.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
         service.AddAuthentication(options =>
         {
