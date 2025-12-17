@@ -9,6 +9,13 @@ public class TaafiProfile : Profile
         CreateMap<AuthModel, ApplicationUser>();
         CreateMap<ApplicationUser, AuthModel>();
         CreateMap<Doctor, DoctorDto>();
+        CreateMap<Appointment, AppointmentDto>();
+        CreateMap<CreateAppointmentDto, Appointment>();
+
+        CreateMap<Appointment, AppointmentDto>()
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
+                .ForMember(dest => dest.DoctorImage, opt => opt.MapFrom(src => src.Doctor.ImageUrl))
+                .ForMember(dest => dest.SpecialtyName, opt => opt.MapFrom(src => src.Doctor.Specialty.Name));
     }
 }
 

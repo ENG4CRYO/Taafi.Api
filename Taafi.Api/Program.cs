@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 

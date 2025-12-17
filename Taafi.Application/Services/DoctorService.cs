@@ -52,5 +52,20 @@ namespace Taafi.Application.Services
 
             return doctors;
         }
+
+        public async Task<List<DoctorScheduleDto>> GetDoctorScheduleAsync(string doctorId)
+        {
+            var schedules = await _context.DoctorSchedules
+                .Where(s => s.DoctorId == doctorId)
+                .ToListAsync();
+
+            return schedules.Select(s => new DoctorScheduleDto
+            {
+                DayOfWeek = s.DayOfWeek.ToString(),
+                StartTime = s.StartTime.ToString("HH:mm"),
+                EndTime = s.EndTime.ToString("HH:mm"),
+                IsAvailable = s.IsAvailable
+            }).ToList();
+        }
     }
 }

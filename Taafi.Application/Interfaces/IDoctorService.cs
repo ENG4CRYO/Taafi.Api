@@ -5,5 +5,7 @@ public interface IDoctorService
 {
     Task <List<DoctorDto>> GetDoctorsAsync(string? search, string? specialtyId);
     Task<DoctorDto> GetDoctorByIdAsync(string id);
+
+    Task<List<DoctorScheduleDto>> GetDoctorScheduleAsync(string doctorId);
 }
 

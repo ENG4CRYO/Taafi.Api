@@ -35,5 +35,12 @@ namespace Taafi.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("{id}/schedule")]
+        public async Task<IActionResult> GetSchedule(string id)
+        {
+            var schedule = await _service.GetDoctorScheduleAsync(id);
+            return Ok(schedule);
+        }
     }
 }

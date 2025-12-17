@@ -9,6 +9,7 @@ public static class ApplicationServiceCollectionExtensions
     {
         service.AddScoped<IAuthService, AuthService>();
         service.AddScoped<IDoctorService, DoctorService>();
+        service.AddScoped<IAppointmentService, AppointmentService>();
         service.AddAutoMapper(cfg => cfg.AddProfile<TaafiProfile>());
         return service;
     }
