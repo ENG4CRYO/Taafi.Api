@@ -19,20 +19,24 @@ namespace Taafi.Application.Services
             _mapper = mapper;
         }
                         
-        public async Task<DoctorDto> GetDoctorByIdAsync(string id)
+        public async Task<ServiceResponse<DoctorDto>> GetDoctorByIdAsync(string id)
         {
+
+            var response = new ServiceResponse<DoctorDto>();
             var doctor = await _context.Doctors
                 .Where(d => d.Id == id)
                 .ProjectTo<DoctorDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
 
-            if (doctor == null) return null!;
+            if (doctor == null) return ServiceResponse<DoctorDto>.Error("Doctor not found");
 
-            return doctor;
+             response.Data = doctor;
+            return response;
         }
 
-        public async Task<List<DoctorDto>> GetDoctorsAsync(string? search, string? specialtyId)
+        public async Task<ServiceResponse<List<DoctorDto>>> GetDoctorsAsync(string? search, string? specialtyId)
         {
+            var response = new ServiceResponse<List<DoctorDto>>();  
             var query = _context.Doctors.AsQueryable();
 
             query = query.Include(d => d.Specialty);
@@ -50,22 +54,26 @@ namespace Taafi.Application.Services
                 .ProjectTo<DoctorDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return doctors;
+            response.Data = doctors;
+            return response;
         }
 
-        public async Task<List<DoctorScheduleDto>> GetDoctorScheduleAsync(string doctorId)
+        public async Task<ServiceResponse<List<DoctorScheduleDto>>> GetDoctorScheduleAsync(string doctorId)
         {
+            var response = new ServiceResponse<List<DoctorScheduleDto>>();  
             var schedules = await _context.DoctorSchedules
                 .Where(s => s.DoctorId == doctorId)
                 .ToListAsync();
 
-            return schedules.Select(s => new DoctorScheduleDto
+            response.Data =  schedules.Select(s => new DoctorScheduleDto
             {
                 DayOfWeek = s.DayOfWeek.ToString(),
                 StartTime = s.StartTime.ToString("HH:mm"),
                 EndTime = s.EndTime.ToString("HH:mm"),
                 IsAvailable = s.IsAvailable
             }).ToList();
+
+            return response;
         }
     }
 }

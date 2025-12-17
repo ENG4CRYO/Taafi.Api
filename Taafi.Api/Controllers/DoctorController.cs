@@ -28,9 +28,9 @@ namespace Taafi.Api.Controllers
         {
             var result = await _service.GetDoctorByIdAsync(id);
 
-            if (result == null)
+            if (!result.Success)
             {
-                return NotFound(new { message = "Doctor not found" });
+                return NotFound(result);
             }
 
             return Ok(result);
@@ -39,8 +39,12 @@ namespace Taafi.Api.Controllers
         [HttpGet("{id}/schedule")]
         public async Task<IActionResult> GetSchedule(string id)
         {
-            var schedule = await _service.GetDoctorScheduleAsync(id);
-            return Ok(schedule);
+            var result = await _service.GetDoctorScheduleAsync(id);
+            if (!result.Success)
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
         }
     }
 }

@@ -3,9 +3,9 @@ using Taafi.Application.Dtos;
 
 public interface IDoctorService
 {
-    Task <List<DoctorDto>> GetDoctorsAsync(string? search, string? specialtyId);
-    Task<DoctorDto> GetDoctorByIdAsync(string id);
+    Task <ServiceResponse<List<DoctorDto>>> GetDoctorsAsync(string? search, string? specialtyId);
+    Task <ServiceResponse<DoctorDto>> GetDoctorByIdAsync(string id);
 
-    Task<List<DoctorScheduleDto>> GetDoctorScheduleAsync(string doctorId);
+    Task <ServiceResponse<List<DoctorScheduleDto>>> GetDoctorScheduleAsync(string doctorId);
 }
 

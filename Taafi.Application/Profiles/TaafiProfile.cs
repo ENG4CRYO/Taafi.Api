@@ -9,7 +9,6 @@ public class TaafiProfile : Profile
         CreateMap<AuthModel, ApplicationUser>();
         CreateMap<ApplicationUser, AuthModel>();
         CreateMap<Doctor, DoctorDto>();
-        CreateMap<Appointment, AppointmentDto>();
         CreateMap<CreateAppointmentDto, Appointment>();
 
         CreateMap<Appointment, AppointmentDto>()

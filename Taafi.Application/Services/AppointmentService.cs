@@ -12,17 +12,19 @@ public class AppointmentService : IAppointmentService
         _mapper = mapper;
         _context = context;
     }
-    public async Task<bool> CancelAppointmentAsync(string id)
+    public async Task<ServiceResponse<bool>> CancelAppointmentAsync(string id)
     {
         var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
 
         if (appointment == null)
         {
-            return false;
+            return ServiceResponse<bool>.Error("Booking not found");
         }
+
         appointment.Status = AppointmentStatus.Cancelled;
         await _context.SaveChangesAsync(CancellationToken.None);
-        return true;
+
+        return new ServiceResponse<bool> { Data = true, Message = "Booking cancelled successfully" };
     }
 
     public async Task<ServiceResponse<AppointmentDto>> CreateAppointmentAsync(CreateAppointmentDto appointmentDto, string patientId)
@@ -70,28 +72,40 @@ public class AppointmentService : IAppointmentService
         _context.Appointments.Add(appointment);
         await _context.SaveChangesAsync(CancellationToken.None);
 
+        appointment.Doctor = await _context.Doctors
+            .Include(d => d.Specialty)
+            .FirstOrDefaultAsync(d => d.Id == appointment.DoctorId);
 
         response.Data = _mapper.Map<AppointmentDto>(appointment);
         response.Message = "Your reservation has been completed successfully";
         return response;
     }
 
-    public async Task<AppointmentDto?> GetAppointmentByIdAsync(string id)
+    public async Task<ServiceResponse<AppointmentDto?>> GetAppointmentByIdAsync(string id)
     {
-        return await _context.Appointments
+        var appointment = await _context.Appointments
             .Where(a => a.Id == id)
             .ProjectTo<AppointmentDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
+
+        if (appointment == null)
+        {
+            return ServiceResponse<AppointmentDto?>.Error("Booking not found");
+        }
+
+        return new ServiceResponse<AppointmentDto?> { Data = appointment };
     }
 
-    public async Task<List<AppointmentDto>> GetMyAppointmentsAsync(string patientId)
+
+    public async Task<ServiceResponse<List<AppointmentDto>>> GetMyAppointmentsAsync(string patientId)
     {
-        
-        return await _context.Appointments
+        var appointments = await _context.Appointments
             .Where(a => a.PatientId == patientId)
-            .OrderByDescending(a => a.AppointmentDate) 
+            .OrderByDescending(a => a.AppointmentDate)
             .ProjectTo<AppointmentDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
+
+        return new ServiceResponse<List<AppointmentDto>> { Data = appointments };
     }
 }
 

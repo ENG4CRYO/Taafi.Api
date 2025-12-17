@@ -23,8 +23,8 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> GetMyAppointments()
     {
         var patientId = User.FindFirstValue("uid");
-
         var result = await _appointmentService.GetMyAppointmentsAsync(patientId!);
+
         return Ok(result);
     }
 
@@ -35,10 +35,9 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> GetById(string id)
     {
         var result = await _appointmentService.GetAppointmentByIdAsync(id);
-        if (result == null) return NotFound();
 
-        var patientId = User.FindFirstValue("uid");
-        if (result.PatientId != patientId) return Unauthorized();
+        if (!result.Success)
+            return NotFound(result);
 
         return Ok(result);
     }
@@ -66,8 +65,9 @@ public class AppointmentsController : ControllerBase
     {
         var result = await _appointmentService.CancelAppointmentAsync(id);
 
-        if (!result) return NotFound();
+        if (!result.Success)
+            return BadRequest(result);
 
-        return Ok(new { message = "Appointment cancelled successfully" });
+        return Ok(result);
     }
 }
