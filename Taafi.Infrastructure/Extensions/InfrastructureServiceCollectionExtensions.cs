@@ -12,7 +12,7 @@ public static class InfrastructureServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection service, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("LocalConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         service.AddIdentity<ApplicationUser, IdentityRole>().
             AddEntityFrameworkStores<AppDbContext>();

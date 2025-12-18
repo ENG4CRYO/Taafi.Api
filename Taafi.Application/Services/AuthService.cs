@@ -64,9 +64,19 @@ public class AuthService : IAuthService
     public async Task<AuthModel> RefreshTokenAsync(string token, string refreshToken)
     {
         var authModel = new AuthModel();
+        ClaimsPrincipal? principal;
 
+        try
+        {
 
-        var principal = GetPrincipalFromExpiredToken(token);
+            principal = GetPrincipalFromExpiredToken(token);
+        }
+        catch (Exception ex)
+        {
+            authModel.Message = "Invalid Access Token";
+            return authModel;
+        }
+
         if (principal == null)
         {
             authModel.Message = "Invalid Token";
@@ -74,28 +84,34 @@ public class AuthService : IAuthService
         }
 
         var userId = principal.Claims.SingleOrDefault(c => c.Type == "uid")?.Value;
-        var user = await _userManager.Users
-            .Include(u => u.RefreshTokens)
-                .SingleOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null || user.RefreshTokens == null)
+        if (string.IsNullOrEmpty(userId))
         {
-            authModel.Message = "Invalid Token";
+            authModel.Message = "Invalid Token Claims";
             return authModel;
         }
 
+        var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
+            .SingleOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null || user.RefreshTokens == null)
+        {
+            authModel.Message = "User not found or has no tokens";
+            return authModel;
+        }
 
         var storedRefreshToken = user.RefreshTokens.SingleOrDefault(t => t.Token == refreshToken);
 
-
         if (storedRefreshToken == null || !storedRefreshToken.IsActive)
         {
-            authModel.Message = "Invalid Refresh Token";
+            authModel.Message = "Invalid or Expired Refresh Token";
             return authModel;
         }
 
 
         storedRefreshToken.RevokedOn = DateTime.UtcNow;
+
 
         var newJwtToken = await CreateJwtToken(user);
         var newRefreshToken = GenerateRefreshToken();

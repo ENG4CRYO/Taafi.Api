@@ -19,13 +19,12 @@ builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
+
     app.MapOpenApi();
     app.MapScalarApiReference();
-}
 
-app.UseHttpsRedirection();
+
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 

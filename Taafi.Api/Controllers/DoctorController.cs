@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Taafi.Application.Dtos;
 using Taafi.Application.Services;
 
 namespace Taafi.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("taafi/[controller]")]
     public class DoctorController : ControllerBase
@@ -37,6 +39,8 @@ namespace Taafi.Api.Controllers
         }
 
         [HttpGet("{id}/schedule")]
+        [ProducesResponseType(typeof(DoctorScheduleDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetSchedule(string id)
         {
             var result = await _service.GetDoctorScheduleAsync(id);
