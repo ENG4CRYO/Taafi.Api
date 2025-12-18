@@ -12,11 +12,18 @@ public static class InfrastructureServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection service, IConfiguration configuration)
     {
+        
         var connectionString = configuration.GetConnectionString("DefaultConnection");
+                              
 
-        service.AddIdentity<ApplicationUser, IdentityRole>().
-            AddEntityFrameworkStores<AppDbContext>();
 
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        }
+
+        service.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<AppDbContext>();
 
         service.Configure<JWT>(configuration.GetSection("JWT"));
         service.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
@@ -25,22 +32,32 @@ public static class InfrastructureServiceCollectionExtensions
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-        }).AddJwtBearer(o =>
+        })
+        .AddJwtBearer(o =>
         {
             o.RequireHttpsMetadata = false;
             o.SaveToken = false;
+
+
+            var jwtKey = configuration["JWT:Key"];
+            var jwtIssuer = configuration["JWT:Issuer"];
+            var jwtAudience = configuration["JWT:Audience"];
+
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                throw new InvalidOperationException("JWT Key is missing from configuration.");
+            }
+
             o.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                ValidIssuer = configuration["JWT:Issuer"],
-                ValidAudience = configuration["JWT:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!))
+                ValidIssuer = jwtIssuer,
+                ValidAudience = jwtAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
             };
-
         });
 
         service.AddDbContext<AppDbContext>(options =>
@@ -48,7 +65,6 @@ public static class InfrastructureServiceCollectionExtensions
             options.UseNpgsql(connectionString,
             b => b.MigrationsAssembly(typeof(InfrastructureServiceCollectionExtensions).Assembly.FullName));
         });
-
 
         return service;
     }
