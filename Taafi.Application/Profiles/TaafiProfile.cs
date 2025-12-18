@@ -15,6 +15,9 @@ public class TaafiProfile : Profile
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.Name))
                 .ForMember(dest => dest.DoctorImage, opt => opt.MapFrom(src => src.Doctor.ImageUrl))
                 .ForMember(dest => dest.SpecialtyName, opt => opt.MapFrom(src => src.Doctor.Specialty.Name));
+
+        CreateMap<ChatMessage, ChatMessageDto>();
+        CreateMap<Notification, NotificationDto>();
     }
 }
 

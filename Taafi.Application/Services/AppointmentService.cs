@@ -6,20 +6,30 @@ using Taafi.Application.Interfaces;
 public class AppointmentService : IAppointmentService
 {
     private readonly IMapper _mapper;
-    private readonly IAppDbContext _context;    
-    public AppointmentService(IMapper mapper, IAppDbContext context)
+    private readonly IAppDbContext _context;
+    private readonly INotificationService _notificationService;
+    public AppointmentService(IMapper mapper, IAppDbContext context, INotificationService notificationService)
     {
         _mapper = mapper;
         _context = context;
+        _notificationService = notificationService;
     }
     public async Task<ServiceResponse<bool>> CancelAppointmentAsync(string id)
     {
-        var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+        var appointment = await _context.Appointments
+        .Include(a => a.Doctor)
+        .FirstOrDefaultAsync(a => a.Id == id);
 
         if (appointment == null)
         {
             return ServiceResponse<bool>.Error("Booking not found");
         }
+
+        await _notificationService.CreateNotificationAsync(
+            appointment.PatientId,
+            "إلغاء موعد",
+            $"تم إلغاء موعدك مع د. {appointment.Doctor.Name} بنجاح."
+        );
 
         appointment.Status = AppointmentStatus.Cancelled;
         await _context.SaveChangesAsync(CancellationToken.None);
@@ -72,9 +82,17 @@ public class AppointmentService : IAppointmentService
         _context.Appointments.Add(appointment);
         await _context.SaveChangesAsync(CancellationToken.None);
 
+        
+
         appointment.Doctor = await _context.Doctors
             .Include(d => d.Specialty)
             .FirstOrDefaultAsync(d => d.Id == appointment.DoctorId);
+
+        await _notificationService.CreateNotificationAsync(
+        patientId,
+        "تأكيد حجز",
+        $"تم حجز موعدك بنجاح مع د. {appointment.Doctor?.Name ?? "غير معروف"} بتاريخ {appointment.AppointmentDate:yyyy-MM-dd} الساعة {appointment.AppointmentTime}"
+    );
 
         response.Data = _mapper.Map<AppointmentDto>(appointment);
         response.Message = "Your reservation has been completed successfully";

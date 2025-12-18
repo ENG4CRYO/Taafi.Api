@@ -13,6 +13,7 @@ namespace Taafi.Application.Interfaces
         DbSet<DoctorSchedule> DoctorSchedules { get; set; }
         DbSet<Notification> Notifications { get; set; }
 
+        DbSet<ChatMessage> ChatMessages { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
