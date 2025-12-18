@@ -20,6 +20,8 @@ public class ChatController : ControllerBase
 
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SendMessage([FromBody] SendMessageDto dto)
     {
         
@@ -37,6 +39,7 @@ public class ChatController : ControllerBase
 
 
     [HttpGet("{doctorId}")]
+    [ProducesResponseType(typeof(List<ChatMessageDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetChatHistory(string doctorId)
     {
         var patientId = User.FindFirstValue("uid");

@@ -53,7 +53,7 @@ public class AppointmentsController : ControllerBase
 
         if (!result.Success)
         {
-            return BadRequest(new { message = result.Message });
+            return BadRequest(result);
         }
         return Ok(result);
     }

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Taafi.Application.Dtos;
 using Taafi.Application.Interfaces;
 
 namespace Taafi.Api.Controllers;
@@ -18,6 +19,7 @@ public class NotificationsController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(List<NotificationDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMyNotifications()
     {
         var userId = User.FindFirstValue("uid");
@@ -26,6 +28,8 @@ public class NotificationsController : ControllerBase
     }
 
     [HttpPut("{id}/read")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> MarkAsRead(string id)
     {
         var result = await _notificationService.MarkAsReadAsync(id);
