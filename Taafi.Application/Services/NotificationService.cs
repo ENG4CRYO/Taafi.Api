@@ -18,7 +18,7 @@ public class NotificationService : INotificationService
 
     public async Task<ServiceResponse<List<NotificationDto>>> GetMyNotificationsAsync(string userId)
     {
-        var notifications = await _context.Notifications
+        var notifications = await _context.Notifications.AsNoTracking()
             .Where(n => n.UserId == userId)
             .OrderByDescending(n => n.CreatedAt) 
             .ProjectTo<NotificationDto>(_mapper.ConfigurationProvider)

@@ -55,7 +55,7 @@ public class AppointmentsController : ControllerBase
         {
             return BadRequest(new { message = result.Message });
         }
-        return Ok(result.Data);
+        return Ok(result);
     }
 
     [HttpPut("{id}/cancel")]

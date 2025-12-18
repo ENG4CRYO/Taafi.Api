@@ -23,7 +23,7 @@ namespace Taafi.Application.Services
         {
 
             var response = new ServiceResponse<DoctorDto>();
-            var doctor = await _context.Doctors
+            var doctor = await _context.Doctors.AsNoTracking()
                 .Where(d => d.Id == id)
                 .ProjectTo<DoctorDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
@@ -37,7 +37,7 @@ namespace Taafi.Application.Services
         public async Task<ServiceResponse<List<DoctorDto>>> GetDoctorsAsync(string? search, string? specialtyId)
         {
             var response = new ServiceResponse<List<DoctorDto>>();  
-            var query = _context.Doctors.AsQueryable();
+            var query = _context.Doctors.AsNoTracking().AsQueryable();
 
             query = query.Include(d => d.Specialty);
 

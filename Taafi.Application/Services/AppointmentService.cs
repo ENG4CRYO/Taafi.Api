@@ -101,7 +101,7 @@ public class AppointmentService : IAppointmentService
 
     public async Task<ServiceResponse<AppointmentDto?>> GetAppointmentByIdAsync(string id)
     {
-        var appointment = await _context.Appointments
+        var appointment = await _context.Appointments.AsNoTracking()
             .Where(a => a.Id == id)
             .ProjectTo<AppointmentDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
@@ -117,7 +117,7 @@ public class AppointmentService : IAppointmentService
 
     public async Task<ServiceResponse<List<AppointmentDto>>> GetMyAppointmentsAsync(string patientId)
     {
-        var appointments = await _context.Appointments
+        var appointments = await _context.Appointments.AsNoTracking()
             .Where(a => a.PatientId == patientId)
             .OrderByDescending(a => a.AppointmentDate)
             .ProjectTo<AppointmentDto>(_mapper.ConfigurationProvider)
