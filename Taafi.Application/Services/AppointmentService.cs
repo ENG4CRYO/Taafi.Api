@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Taafi.Application.Helpers;
 using Taafi.Application.Interfaces;
 
 public class AppointmentService : IAppointmentService
@@ -8,11 +11,14 @@ public class AppointmentService : IAppointmentService
     private readonly IMapper _mapper;
     private readonly IAppDbContext _context;
     private readonly INotificationService _notificationService;
-    public AppointmentService(IMapper mapper, IAppDbContext context, INotificationService notificationService)
+    private readonly IConfiguration _configuration;
+    public AppointmentService(IMapper mapper, IAppDbContext context
+        , INotificationService notificationService, IConfiguration configuration)
     {
         _mapper = mapper;
         _context = context;
         _notificationService = notificationService;
+        _configuration = configuration;
     }
     public async Task<ServiceResponse<bool>> CancelAppointmentAsync(string id)
     {
@@ -37,16 +43,16 @@ public class AppointmentService : IAppointmentService
         return new ServiceResponse<bool> { Data = true, Message = "Booking cancelled successfully" };
     }
 
-    public async Task<ServiceResponse<AppointmentDto>> CreateAppointmentAsync(CreateAppointmentDto appointmentDto, string patientId)
+    public async Task<ServiceResponse<AppointmentDto>> CreateAppointmentAsync(CreateAppointmentDto appointmentDto, string patientId, string patientName)
     {
 
         var response = new ServiceResponse<AppointmentDto>();
 
-       
+
         var doctorExists = await _context.Doctors.AnyAsync(d => d.Id == appointmentDto.DoctorId);
         if (!doctorExists)
         {
-       
+
             return ServiceResponse<AppointmentDto>.Error("Doctor is not exists");
         }
 
@@ -82,11 +88,13 @@ public class AppointmentService : IAppointmentService
         _context.Appointments.Add(appointment);
         await _context.SaveChangesAsync(CancellationToken.None);
 
-        
+
 
         appointment.Doctor = await _context.Doctors
             .Include(d => d.Specialty)
             .FirstOrDefaultAsync(d => d.Id == appointment.DoctorId);
+
+
 
         await _notificationService.CreateNotificationAsync(
         patientId,
@@ -96,6 +104,15 @@ public class AppointmentService : IAppointmentService
 
         response.Data = _mapper.Map<AppointmentDto>(appointment);
         response.Message = "Your reservation has been completed successfully";
+
+        string Name = patientName;
+        string Time = $@"{ appointment.AppointmentDate.ToShortDateString()} {appointment.AppointmentTime}";
+        string QueueNumber = appointment.QueueNumber.ToString(); 
+        string emailBody = EmailBody.GetEmail(patientName,Time,QueueNumber);
+
+        BackgroundJob.Enqueue<IEmailService>(emailService =>
+            emailService.SendEmailAsync(_configuration["EmailTo"]!, response.Data.QueueNumber.ToString(), emailBody));
+
         return response;
     }
 

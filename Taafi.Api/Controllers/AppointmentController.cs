@@ -1,6 +1,7 @@
-﻿using System.Security.Claims;
+﻿using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Taafi.Application.Dtos;
 using Taafi.Application.Interfaces;
 
@@ -48,13 +49,16 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
     {
         var patientId = User.FindFirstValue("uid");
+        var patientName = User.FindFirstValue("fullName");
 
-        var result = await _appointmentService.CreateAppointmentAsync(dto, patientId!);
+        var result = await _appointmentService.CreateAppointmentAsync(dto, patientId!, patientName!);
 
         if (!result.Success)
         {
             return BadRequest(result);
         }
+
+        
         return Ok(result);
     }
 

@@ -24,7 +24,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         public DbSet<Specialty> Specialties { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; } 
-        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Notification> Notifications { get; set; } 
         
         public DbSet<ChatMessage> ChatMessages { get; set; }    
 }

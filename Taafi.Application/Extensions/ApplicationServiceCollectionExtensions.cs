@@ -14,6 +14,9 @@ public static class ApplicationServiceCollectionExtensions
         service.AddHttpClient<IGeminiService, GeminiService>();
         service.AddScoped<IChatService, ChatService>();
         service.AddScoped<INotificationService, NotificationService>();
+
+
+
         service.AddAutoMapper(cfg => cfg.AddProfile<TaafiProfile>());
         return service;
     }

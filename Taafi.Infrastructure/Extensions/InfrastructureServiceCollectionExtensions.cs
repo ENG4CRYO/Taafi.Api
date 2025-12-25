@@ -13,7 +13,7 @@ public static class InfrastructureServiceCollectionExtensions
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection service, IConfiguration configuration)
     {
         
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("LocalConnection");
                               
 
 
