@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
 using Taafi.Application.Interfaces;
 
@@ -12,14 +13,14 @@ public static class InfrastructureServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection service, IConfiguration configuration)
     {
-        
-        var connectionString = configuration.GetConnectionString("LocalConnection");
-                              
 
+       
+        var connectionString = configuration.GetConnectionString("LocalConnection");
+                             
 
         if (string.IsNullOrEmpty(connectionString))
         {
-            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            throw new InvalidOperationException($@"Connection string '{connectionString}' not found.");
         }
 
         service.AddIdentity<ApplicationUser, IdentityRole>()

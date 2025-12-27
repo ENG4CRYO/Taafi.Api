@@ -18,6 +18,8 @@ public class TaafiProfile : Profile
 
         CreateMap<ChatMessage, ChatMessageDto>();
         CreateMap<Notification, NotificationDto>();
+
+        CreateMap<Specialty, SpecialtyDto>();
     }
 }
 
