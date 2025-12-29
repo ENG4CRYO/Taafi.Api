@@ -1,24 +1,31 @@
-﻿
+﻿using Google.Apis.Auth;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Taafi.Application.Dtos;
 
 public class AuthService : IAuthService
 {
+    private readonly IConfiguration _configuration;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JWT _jwt;
     private readonly IMapper _mapper;
 
-    public AuthService(UserManager<ApplicationUser> userManager, IOptions<JWT> jwt, IMapper mapper)
+    public AuthService(UserManager<ApplicationUser> userManager,
+        IOptions<JWT> jwt,
+        IMapper mapper,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _jwt = jwt.Value;
         _mapper = mapper;
+        _configuration = configuration;
 
     }
     public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
@@ -58,6 +65,74 @@ public class AuthService : IAuthService
             Roles = roleList.ToList(),
             ExpiresOn = jwtSecurityToken.ValidTo
         };
+
+    }
+
+    public async Task<AuthModel> LoginWithGoogleAsync(string googleIdToken)
+    {
+        GoogleJsonWebSignature.Payload payload;
+
+        try
+        {
+            payload = await GoogleJsonWebSignature.ValidateAsync(googleIdToken, new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new List<string> { _configuration["GoogleAuth:ClientId"] }
+            });
+        }
+        catch (Exception)
+        {
+            return new AuthModel { Message = "Invalid Google ID Token" };
+        }
+
+        var user = await _userManager.FindByEmailAsync(payload.Email);
+
+        if (user == null)
+        {
+            user = new ApplicationUser
+            {
+                UserName = payload.Email.Split('@')[0],
+                Email = payload.Email,
+                FullName = payload.Name,
+                EmailConfirmed = true,
+                Governorate = "Not Specified",
+                Age = 18
+            };
+            var result = await _userManager.CreateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return new AuthModel { Message = $"User creation failed: {errors}" };
+            }
+            await _userManager.AddToRoleAsync(user, AspRoles.User);
+        }
+
+        var jwtSecurityToken = await CreateJwtToken(user);
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+
+     
+        if (user.RefreshTokens == null) user.RefreshTokens = new List<RefreshToken>();
+
+
+        var refreshToken = GenerateRefreshToken();
+        user.RefreshTokens.Add(refreshToken);
+        await _userManager.UpdateAsync(user);
+
+        var roleList = await _userManager.GetRolesAsync(user);
+
+    
+        return new AuthModel
+        {
+            IsAuthenticated = true,
+            Token = tokenString,
+            RefreshToken = refreshToken.Token,
+            RefreshTokenExpiration = refreshToken.ExpiresOn,
+            UserName = user.UserName,
+            Email = user.Email,
+            Roles = roleList.ToList(),
+            ExpiresOn = jwtSecurityToken.ValidTo,
+            Message = "Login Successful via Google"
+        };
+
 
     }
 
@@ -173,6 +248,59 @@ public class AuthService : IAuthService
 
         return authModel;
 
+    }
+
+    public async Task<AuthModel> UpdateUserProfileAsync(string id, UpdateUserProfileDto userDto)
+    {
+        var authModel = new AuthModel();
+
+        
+        var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null)
+        {
+            authModel.Message = "User not found";
+            authModel.IsAuthenticated = false;
+            return authModel;
+        }
+
+        user.FullName = userDto.FullName;
+        user.PhoneNumber = userDto.PhoneNumber;
+        user.Governorate = userDto.Governorate;
+        user.Age = userDto.Age;
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            var erorr = string.Empty;
+
+            foreach (var err in result.Errors)
+            {
+                erorr += $"{err.Description},";
+            }
+
+            authModel.Message = erorr;
+            authModel.IsAuthenticated = false;
+            return authModel;
+        }
+
+        var newToken = await CreateJwtToken(user);
+        var refreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
+
+        return new AuthModel
+        {
+            IsAuthenticated = true,
+            Token = new JwtSecurityTokenHandler().WriteToken(newToken),
+            RefreshToken = refreshToken?.Token,
+            RefreshTokenExpiration = refreshToken?.ExpiresOn ?? DateTime.UtcNow,
+            UserName = user.UserName,
+            Email = user.Email,
+            Roles = (await _userManager.GetRolesAsync(user)).ToList(),
+            ExpiresOn = newToken.ValidTo,
+            Message = "Profile updated successfully"
+        };
     }
 
     #region helpers

@@ -24,6 +24,7 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> GetMyAppointments()
     {
         var patientId = User.FindFirstValue("uid");
+        
         var result = await _appointmentService.GetMyAppointmentsAsync(patientId!);
 
         return Ok(result);

@@ -15,7 +15,7 @@ public static class InfrastructureServiceCollectionExtensions
     {
 
        
-        var connectionString = configuration.GetConnectionString("LocalConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
                              
 
         if (string.IsNullOrEmpty(connectionString))
