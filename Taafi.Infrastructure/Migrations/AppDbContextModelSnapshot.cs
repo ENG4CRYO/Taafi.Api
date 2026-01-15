@@ -139,7 +139,7 @@ namespace Taafi.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("ChatMessage", b =>
@@ -171,7 +171,7 @@ namespace Taafi.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("Doctor", b =>
@@ -216,7 +216,7 @@ namespace Taafi.Infrastructure.Migrations
 
                     b.HasIndex("SpecialtyId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
 
                     b.HasData(
                         new
@@ -342,7 +342,7 @@ namespace Taafi.Infrastructure.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("DoctorSchedules");
+                    b.ToTable("DoctorSchedules", (string)null);
 
                     b.HasData(
                         new
@@ -614,7 +614,7 @@ namespace Taafi.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("RefreshToken", b =>
@@ -645,7 +645,7 @@ namespace Taafi.Infrastructure.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("RefreshToken", (string)null);
                 });
 
             modelBuilder.Entity("Specialty", b =>
@@ -665,7 +665,7 @@ namespace Taafi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specialties");
+                    b.ToTable("Specialties", (string)null);
 
                     b.HasData(
                         new

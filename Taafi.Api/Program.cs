@@ -4,11 +4,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 using Taafi.Application.Interfaces;
 
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.OpenApi;
+
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 builder.Services.AddHangfire(configuration => configuration
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -16,7 +29,11 @@ builder.Services.AddHangfire(configuration => configuration
         .UseRecommendedSerializerSettings()
         .UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHangfireServer();
+
+builder.Services.AddHangfireServer(options =>
+{
+    options.WorkerCount = 5; 
+});
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -25,7 +42,18 @@ builder.Logging.AddDebug();
 builder.Services.AddControllers();
 
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Servers = new List<OpenApiServer>
+        {
+          
+            new OpenApiServer { Url = "https://taafi.ddns.net" }
+        };
+        return Task.CompletedTask;
+    });
+});
 builder.Services.AddEndpointsApiExplorer();
 
 
@@ -38,6 +66,12 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+app.UseCors("AllowAll");
 
 app.UseExceptionHandler(errorApp =>
 {
@@ -71,14 +105,14 @@ app.UseHangfireDashboard();
 app.MapScalarApiReference("/scalar", options =>
 {
     options.WithTitle("Taafi API");     
-    options.WithTheme(ScalarTheme.Moon); 
+    options.WithTheme(ScalarTheme.Moon);
 });
 
 
 app.MapGet("/", () => Results.Redirect("/scalar"));
 
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 

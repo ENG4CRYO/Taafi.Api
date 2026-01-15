@@ -18,13 +18,13 @@ namespace Taafi.Infrastructure.Migrations
                 columns: new[] { "Id", "IconUrl", "Name" },
                 values: new object[,]
                 {
-                    { "spec-derma-004", "uploads/specialties/derma.png", "الجلدية والتجميل" },
-                    { "spec-ent-007", "uploads/specialties/ent.png", "أنف وأذن وحنجرة" },
-                    { "spec-eyes-005", "uploads/specialties/eye.png", "طب العيون" },
-                    { "spec-heart-001", "uploads/specialties/heart.png", "أمراض القلب" },
-                    { "spec-kids-003", "uploads/specialties/baby.png", "طب الأطفال" },
-                    { "spec-ortho-006", "uploads/specialties/bone.png", "العظام والمفاصل" },
-                    { "spec-teeth-002", "uploads/specialties/tooth.png", "طب الأسنان" }
+                    { "spec-derma-004", "uploads/specialties/derma.svg", "الجلدية والتجميل" },
+                    { "spec-ent-007", "uploads/specialties/ent.svg", "أنف وأذن وحنجرة" },
+                    { "spec-eyes-005", "uploads/specialties/eye.svg", "طب العيون" },
+                    { "spec-heart-001", "uploads/specialties/heart.svg", "أمراض القلب" },
+                    { "spec-kids-003", "uploads/specialties/baby.svg", "طب الأطفال" },
+                    { "spec-ortho-006", "uploads/specialties/bone.svg", "العظام والمفاصل" },
+                    { "spec-teeth-002", "uploads/specialties/tooth.svg", "طب الأسنان" }
                 });
 
             migrationBuilder.InsertData(
@@ -32,14 +32,14 @@ namespace Taafi.Infrastructure.Migrations
                 columns: new[] { "Id", "Bio", "ExperienceYears", "ImageUrl", "IsActive", "Location", "Name", "Rate", "SpecialtyId" },
                 values: new object[,]
                 {
-                    { "doc-ahmed-001", "أخصائي جراحة القلب والأوعية الدموية، بورد عربي، خبرة 15 سنة في القسطرة العلاجية.", 15, "uploads/doctors/dr_ahmed.jpg", true, "بغداد - الكرادة - قرب ساحة كهرمانة", "د. أحمد عباس خالد", 4.9m, "spec-heart-001" },
-                    { "doc-ali-003", "أخصائي طب الأطفال وحديثي الولادة، متابعة النمو والتغذية.", 10, "uploads/doctors/dr_ali.jpg", true, "بغداد - زيونة - مقابل دار الأزياء", "د. علي حسين كاظم", 4.5m, "spec-kids-003" },
-                    { "doc-hassan-007", "أخصائي جراحة العظام والكسور وتبديل المفاصل.", 18, "uploads/doctors/dr_hassan.jpg", true, "النجف - حي السعد", "د. حسن كامل", 4.9m, "spec-ortho-006" },
-                    { "doc-layla-004", "أخصائية الأمراض الجلدية والعلاج بالليزر، حقن الفيلر والبوتوكس.", 6, "uploads/doctors/dr_layla.jpg", true, "أربيل - شارع 100", "د. ليلى عبد العزيز", 4.8m, "spec-derma-004" },
-                    { "doc-mona-008", "علاج حساسية الأنف والجيوب الأنفية، عمليات تجميل الأنف.", 7, "uploads/doctors/dr_mona.jpg", true, "بغداد - شارع فلسطين", "د. منى سامي", 4.3m, "spec-ent-007" },
-                    { "doc-noor-006", "جراحة وجه وفكين، زراعة الأسنان.", 5, "uploads/doctors/dr_noor.jpg", true, "البصرة - الجزائر", "د. نور الهدى", 4.4m, "spec-teeth-002" },
-                    { "doc-omar-005", "استشاري طب وجراحة العيون، تصحيح البصر بالليزك.", 20, "uploads/doctors/dr_omar.jpg", true, "بغداد - الحارثية", "د. عمر فاروق", 4.6m, "spec-eyes-005" },
-                    { "doc-sara-002", "طبيبة أسنان اختصاص تجميل وتقويم، حاصلة على شهادة البورد الأمريكي.", 8, "uploads/doctors/dr_sara.jpg", true, "بغداد - المنصور - شارع 14 رمضان", "د. سارة محمد علي", 4.7m, "spec-teeth-002" }
+                    { "doc-ahmed-001", "أخصائي جراحة القلب والأوعية الدموية، بورد عربي، خبرة 15 سنة في القسطرة العلاجية.", 15, "uploads/doctors/dr_ahmed.png", true, "بغداد - الكرادة - قرب ساحة كهرمانة", "د. أحمد عباس خالد", 4.9m, "spec-heart-001" },
+                    { "doc-ali-003", "أخصائي طب الأطفال وحديثي الولادة، متابعة النمو والتغذية.", 10, "uploads/doctors/dr_ali.png", true, "بغداد - زيونة - مقابل دار الأزياء", "د. علي حسين كاظم", 4.5m, "spec-kids-003" },
+                    { "doc-hassan-007", "أخصائي جراحة العظام والكسور وتبديل المفاصل.", 18, "uploads/doctors/dr_hassan.png", true, "النجف - حي السعد", "د. حسن كامل", 4.9m, "spec-ortho-006" },
+                    { "doc-layla-004", "أخصائية الأمراض الجلدية والعلاج بالليزر، حقن الفيلر والبوتوكس.", 6, "uploads/doctors/dr_layla.png", true, "أربيل - شارع 100", "د. ليلى عبد العزيز", 4.8m, "spec-derma-004" },
+                    { "doc-mona-008", "علاج حساسية الأنف والجيوب الأنفية، عمليات تجميل الأنف.", 7, "uploads/doctors/dr_mona.png", true, "بغداد - شارع فلسطين", "د. منى سامي", 4.3m, "spec-ent-007" },
+                    { "doc-noor-006", "جراحة وجه وفكين، زراعة الأسنان.", 5, "uploads/doctors/dr_noor.png", true, "البصرة - الجزائر", "د. نور الهدى", 4.4m, "spec-teeth-002" },
+                    { "doc-omar-005", "استشاري طب وجراحة العيون، تصحيح البصر بالليزك.", 20, "uploads/doctors/dr_omar.png", true, "بغداد - الحارثية", "د. عمر فاروق", 4.6m, "spec-eyes-005" },
+                    { "doc-sara-002", "طبيبة أسنان اختصاص تجميل وتقويم، حاصلة على شهادة البورد الأمريكي.", 8, "uploads/doctors/dr_sara.png", true, "بغداد - المنصور - شارع 14 رمضان", "د. سارة محمد علي", 4.7m, "spec-teeth-002" }
                 });
 
             migrationBuilder.InsertData(
