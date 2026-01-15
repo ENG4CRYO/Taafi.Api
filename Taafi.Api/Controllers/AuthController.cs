@@ -103,4 +103,22 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    [HttpGet("profile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetProfile()
+    {
+        var userId = User.Claims.FirstOrDefault(c => c.Type == "uid")?.Value;
+
+
+        var result = await _authService.GetUserProfileAsync(userId);
+
+        if (result == null)
+            return BadRequest("User not found");
+
+
+        return Ok(result);
+    }
+
 }

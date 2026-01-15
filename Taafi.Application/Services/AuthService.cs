@@ -303,6 +303,22 @@ public class AuthService : IAuthService
         };
     }
 
+    public async Task<UserProfileDto> GetUserProfileAsync(string id)
+    {
+       var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+
+        var userProfileDto = _mapper.Map<UserProfileDto>(user);
+        var roles = await _userManager.GetRolesAsync(user);
+        userProfileDto.Roles = roles.ToList();
+        return userProfileDto;
+    }
+
     #region helpers
     private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
     {

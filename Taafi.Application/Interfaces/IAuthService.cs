@@ -9,5 +9,7 @@ public interface IAuthService
     Task<AuthModel> RefreshTokenAsync(string token, string refreshToken);
 
     Task<AuthModel> UpdateUserProfileAsync(string id, UpdateUserProfileDto userDto);
+
+    Task<UserProfileDto> GetUserProfileAsync(string id);
 }
 
