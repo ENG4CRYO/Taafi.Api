@@ -365,3 +365,5 @@ FodyWeavers.xsd
 web.config
 appsettings.Development.json
 appsettings.Production.json
+/Taafi.Api/appsettings.Development.json
+/Taafi.Api/appsettings.Development.json
