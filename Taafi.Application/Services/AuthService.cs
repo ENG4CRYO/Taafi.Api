@@ -85,9 +85,10 @@ public class AuthService : IAuthService
         }
 
         var user = await _userManager.FindByEmailAsync(payload.Email);
-
+        bool isNewUser = false;
         if (user == null)
         {
+            isNewUser = true;
             user = new ApplicationUser
             {
                 UserName = payload.Email.Split('@')[0],
@@ -122,8 +123,10 @@ public class AuthService : IAuthService
     
         return new AuthModel
         {
+
             IsAuthenticated = true,
             Token = tokenString,
+            IsNewUser = isNewUser,
             RefreshToken = refreshToken.Token,
             RefreshTokenExpiration = refreshToken.ExpiresOn,
             UserName = user.UserName,
@@ -287,14 +290,20 @@ public class AuthService : IAuthService
         }
 
         var newToken = await CreateJwtToken(user);
-        var refreshToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
+        var newRefreshToken = GenerateRefreshToken();
+
+        if (user.RefreshTokens == null)
+            user.RefreshTokens = new List<RefreshToken>();
+
+        user.RefreshTokens.Add(newRefreshToken);
+        await _userManager.UpdateAsync(user);
 
         return new AuthModel
         {
             IsAuthenticated = true,
             Token = new JwtSecurityTokenHandler().WriteToken(newToken),
-            RefreshToken = refreshToken?.Token,
-            RefreshTokenExpiration = refreshToken?.ExpiresOn ?? DateTime.UtcNow,
+            RefreshToken = newRefreshToken.Token,
+            RefreshTokenExpiration = newRefreshToken.ExpiresOn,
             UserName = user.UserName,
             Email = user.Email,
             Roles = (await _userManager.GetRolesAsync(user)).ToList(),
