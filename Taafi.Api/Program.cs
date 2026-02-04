@@ -6,6 +6,7 @@ using Taafi.Application.Interfaces;
 
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi;
+using Microsoft.EntityFrameworkCore;
 
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

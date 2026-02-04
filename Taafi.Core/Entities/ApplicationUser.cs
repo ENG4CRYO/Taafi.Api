@@ -5,6 +5,7 @@ public class ApplicationUser : IdentityUser
     public string Governorate{ get; set; } = default!;
     public int Age { get; set; } = default!;
     public List<RefreshToken>? RefreshTokens { get; set; }
+    public bool IsNewUser { get; set; } = true; 
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

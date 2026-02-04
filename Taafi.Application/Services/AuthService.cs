@@ -85,10 +85,9 @@ public class AuthService : IAuthService
         }
 
         var user = await _userManager.FindByEmailAsync(payload.Email);
-        bool isNewUser = false;
+        
         if (user == null)
         {
-            isNewUser = true;
             user = new ApplicationUser
             {
                 UserName = payload.Email.Split('@')[0],
@@ -123,10 +122,9 @@ public class AuthService : IAuthService
     
         return new AuthModel
         {
-
+            IsNewUser = user.IsNewUser,
             IsAuthenticated = true,
             Token = tokenString,
-            IsNewUser = isNewUser,
             RefreshToken = refreshToken.Token,
             RefreshTokenExpiration = refreshToken.ExpiresOn,
             UserName = user.UserName,
@@ -226,7 +224,7 @@ public class AuthService : IAuthService
         var user = _mapper.Map<ApplicationUser>(model);
         user.ConcurrencyStamp = Guid.NewGuid().ToString();
 
-
+        user.IsNewUser = false;
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
@@ -273,6 +271,8 @@ public class AuthService : IAuthService
         user.PhoneNumber = userDto.PhoneNumber;
         user.Governorate = userDto.Governorate;
         user.Age = userDto.Age;
+        user.IsNewUser = false;
+
         var result = await _userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
@@ -294,7 +294,7 @@ public class AuthService : IAuthService
 
         if (user.RefreshTokens == null)
             user.RefreshTokens = new List<RefreshToken>();
-
+        
         user.RefreshTokens.Add(newRefreshToken);
         await _userManager.UpdateAsync(user);
 
@@ -358,7 +358,7 @@ public class AuthService : IAuthService
             issuer: _jwt.Issuer,
             audience: _jwt.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddDays(_jwt.AccessTokenValidityInDays),
+            expires: DateTime.UtcNow.AddMinutes(_jwt.AccessTokenValidityInMinutes),
             signingCredentials: signingCredentials);
 
         return jwtSecurityToken;

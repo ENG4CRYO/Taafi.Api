@@ -6,7 +6,7 @@ public class JWT
     public string Audience { get; set; } = default!;
     public double Duration { get; set; } = default!;
 
-    public double AccessTokenValidityInDays { get; set; }
+    public double AccessTokenValidityInMinutes { get; set; }
     public double RefreshTokenValidityInDays { get; set; }
 }
 
