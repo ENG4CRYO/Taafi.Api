@@ -59,7 +59,7 @@ Flutter Developer: [Huthaifa Mohammed] — [Repo](https://github.com/itzHTH/taff
 
 ### Clone the repository
 ```bash
-git clone https://github.com/username/taafi.git
+git clone https://github.com/ENG4CRYO/taafi.git
 ```
 Configure Database: Update the connection string in appsettings.json.
 
